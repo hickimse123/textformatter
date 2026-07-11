@@ -58,8 +58,8 @@ Projeyi internet olmadan, yerel bilgisayarınızda direkt çalıştırmak için 
 
 ## 👤 Emeği Geçenler
 
-* **Oluşturan:** `hic kimse`[cite: 1]
-* **Projenin Aslı:** Uzumaki Naruto[cite: 1]
+* **Oluşturan:** `hic kimse`
+* **Projenin Aslı:** Uzumaki Naruto
 
 ---
 
