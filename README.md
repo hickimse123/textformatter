@@ -12,7 +12,7 @@ Bu araç, özel biçimlendirmelerinizi (kod satırları, çeviri blokları vb.) 
 ## 🌐 Canlı Önizleme (GitHub Pages)
 
 Projeyi tarayıcınızda anında denemek ve kullanmak için GitHub Pages üzerinden yayındaki haline ulaşabilirsiniz:
-👉 **[Metin Düzenleme Aracını Canlı Kullan](https://hickimse.github.io/textformatter)** 
+👉 **[Metin Düzenleme Aracını Canlı Kullan](https://hickimse123.github.io/textformatter)** 
 
 ---
 
