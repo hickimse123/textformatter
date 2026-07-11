@@ -9,6 +9,24 @@ Bu araç, özel biçimlendirmelerinizi (kod satırları, çeviri blokları vb.) 
 
 ---
 
+## 🌐 Canlı Önizleme (GitHub Pages)
+
+Projeyi tarayıcınızda anında denemek ve kullanmak için GitHub Pages üzerinden yayındaki haline ulaşabilirsiniz:
+👉 **[Metin Düzenleme Aracını Canlı Kullan](https://hickimse.github.io/textformatter)** 
+
+---
+
+## 📥 Direkt İndirme ve Çalıştırma
+
+Projeyi internet olmadan, yerel bilgisayarınızda direkt çalıştırmak için aşağıdaki adımları takip edebilirsiniz:
+
+1. Repo içerisindeki **`index.html`** dosyasına gidin.
+2. Dosya üzerindeki **"Raw"** butonuna veya direkt dosya bağlantısına **sağ tıklayın**.
+3. Çıkan menüden **"Bağlantıyı Farklı Kaydet..."** (veya *Hedefi Farklı Kaydet*) seçeneğine tıklayarak dosyayı bilgisayarınıza indirin.
+4. İndirdiğiniz `index.html` dosyasına **çift tıklayarak** tarayıcınızda direkt kullanmaya başlayın!
+
+---
+
 ## 🚀 Özellikler
 
 * **Çoklu Dil Desteği:** **Türkçe (Varsayılan)**, İngilizce, Arapça ve Fransızca dil seçenekleri[cite: 1].
