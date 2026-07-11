@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Formatter</title>
+    <style>
+        :root {
+            /* Renk Paleti: Dark Black ve #ecec00 */
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-card: #1c1c1c;
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --border-color: #2c2c2c;
+            --accent-color: #ecec00;
+            --accent-hover: #ffff33;
+            --accent-glow: rgba(236, 236, 0, 0.15);
+            --accent-dim: rgba(236, 236, 0, 0.1);
+            --btn-secondary-bg: #262626;
+            --btn-secondary-hover: #333333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* Giriş Animasyonu */
+        .main-container {
+            width: 100%;
+            padding: 2rem 1rem;
+            box-sizing: border-box;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-wrapper {
+            width: 100%;
+            max-width: 80rem;
+            margin: 0 auto;
+            background-color: var(--bg-card);
+            padding: 2rem;
+            border-radius: 1.25rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Dil Seçici Kısmı */
+        .header-controls {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 0.5rem;
+            background-color: var(--bg-secondary);
+            padding: 0.35rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-control {
+            background: transparent;
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.25s ease;
+        }
+        
+        .btn-control.active {
+            color: #000000;
+            background-color: var(--accent-color);
+            box-shadow: 0 2px 8px var(--accent-glow);
+        }
+        
+        .btn-control:hover:not(.active) {
+            color: var(--text-primary);
+            background-color: var(--btn-secondary-hover);
+        }
+
+        /* Başlık Alanı */
+        .text-center { text-align: center; }
+        .mb-8 { margin-bottom: 2.5rem; }
+        
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin: 0 0 0.5rem 0;
+            background: linear-gradient(135deg, #ffffff 40%, var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* Metin Alanları */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .textarea-custom {
+            width: 100%;
+            height: 420px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            color: var(--text-primary);
+            resize: vertical;
+            font-size: 1rem;
+            line-height: 1.6;
+            box-sizing: border-box;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .textarea-custom:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+            background-color: var(--bg-primary);
+        }
+
+        /* Butonlar */
+        .btn {
+            padding: 0.85rem 1.5rem;
+            border-radius: 0.85rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border: none;
+            user-select: none;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: #000000;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            box-shadow: 0 4px 20px rgba(236, 236, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: var(--btn-secondary-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--btn-secondary-hover);
+            border-color: #444;
+        }
+
+        .mt-4 { margin-top: 1.25rem; }
+        .flex { display: flex; }
+        .gap-4 { gap: 1rem; }
+        .w-full { width: 100%; }
+
+        /* Created by hic kimse & Footer */
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .created-by {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .created-by span {
+            color: var(--accent-color);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .footer p {
+            margin: 0.25rem 0 0 0;
+        }
+
+        /* MODERN POP-UP (MODAL) ANIMASYONU */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            border: 2px solid var(--accent-color);
+            padding: 2rem;
+            border-radius: 1.25rem;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(236, 236, 0, 0.1);
+            transform: scale(0.8) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-icon {
+            width: 50px;
+            height: 50px;
+            background-color: var(--accent-dim);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+            color: var(--accent-color);
+        }
+
+        .modal-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .modal-btn {
+            background-color: var(--accent-color);
+            color: #000000;
+            padding: 0.6rem 2rem;
+            border-radius: 0.6rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <main class="main-container">
+        <div class="content-wrapper">
+
+            <!-- Dil Değiştirici (Varsayılan TR Aktif) -->
+            <div class="header-controls">
+                <div class="control-group" id="language-switcher">
+                    <button class="btn btn-control active" data-lang="tr">TR</button>
+                    <button class="btn btn-control" data-lang="en">EN</button>
+                    <button class="btn btn-control" data-lang="ar">AR</button>
+                    <button class="btn btn-control" data-lang="fr">FR</button>
+                </div>
+            </div>
+
+            <!-- Başlık Alanı -->
+            <div class="text-center mb-8">
+                <h1 class="main-title" data-lang-key="title"></h1>
+                <p class="subtitle" data-lang-key="subtitle"></p>
+            </div>
+
+            <div class="grid-container">
+                <!-- Girdi Alanı -->
+                <div>
+                    <label for="inputText" class="label" data-lang-key="originalText"></label>
+                    <textarea id="inputText" class="textarea-custom" data-lang-key-placeholder="inputTextPlaceholder"></textarea>
+                    <div class="mt-4 flex gap-4">
+                        <button id="formatBtn" class="btn btn-primary w-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+                            <span data-lang-key="formatButton"></span>
+                        </button>
+                        <button id="pasteBtn" class="btn btn-secondary" data-lang-key="pasteButton"></button>
+                    </div>
+                </div>
+                <!-- Çıktı Alanı -->
+                <div>
+                    <label for="outputText" class="label" data-lang-key="formattedText"></label>
+                    <textarea id="outputText" readonly class="textarea-custom" data-lang-key-placeholder="outputTextPlaceholder"></textarea>
+                    <div class="mt-4 flex gap-4">
+                        <button id="copyBtn" class="btn btn-secondary w-full">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                            <span data-lang-key="copyButton"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alt Bilgi ve İmza Bölümü -->
+            <footer class="footer">
+                <div class="created-by">Created by <span>hic kimse</span></div>
+                <p>Projenin Aslı: Uzumaki Naruto</p>
+            </footer>
+
+        </div>
+    </main>
+
+    <!-- MODERN POP-UP (MODAL) YAPISI -->
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div id="modal-message" class="modal-text">İşlem Başarılı!</div>
+            <button id="modal-close" class="modal-btn">Tamam</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const docHtml = document.documentElement;
+            const inputText = document.getElementById('inputText');
+            const outputText = document.getElementById('outputText');
+            const formatBtn = document.getElementById('formatBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const pasteBtn = document.getElementById('pasteBtn');
+            const langSwitcher = document.getElementById('language-switcher');
+            
+            // Pop-up DOM elementleri
+            const modal = document.getElementById('custom-modal');
+            const modalMessage = document.getElementById('modal-message');
+            const modalClose = document.getElementById('modal-close');
+            
+            // --- DİL ÇEVİRİLERİ ---
+            const translations = {
+                tr: {
+                    title: "Metin Düzenleme Aracı",
+                    subtitle: "Özel biçimlendirmeyi koruyarak satırlar arasına kolayca boşluk ekleyin.",
+                    originalText: "Orijinal Metin",
+                    formattedText: "Düzenlenmiş Metin",
+                    inputTextPlaceholder: "Metninizi buraya yapıştırın...",
+                    outputTextPlaceholder: "Sonuç burada görünecek...",
+                    formatButton: "Metni Düzenle",
+                    pasteButton: "Yapıştır",
+                    copyButton: "Sonucu Kopyala",
+                    toastCopied: "Başarıyla kopyalandı!",
+                    toastCopyFailed: "Kopyalama başarısız oldu!",
+                    toastNothingToCopy: "Kopyalanacak bir şey yok!",
+                    toastPasteFailed: "Yapıştırma başarısız. Lütfen Ctrl+V kullanın.",
+                    toastPasteNotSupported: "Tarayıcınız otomatik yapıştırmayı desteklemiyor.",
+                },
+                en: {
+                    title: "Text Formatter Tool",
+                    subtitle: "Easily add spacing between lines while preserving special formatting.",
+                    originalText: "Original Text",
+                    formattedText: "Formatted Text",
+                    inputTextPlaceholder: "Paste your text here...",
+                    outputTextPlaceholder: "The result will appear here...",
+                    formatButton: "Format Text",
+                    pasteButton: "Paste",
+                    copyButton: "Copy Result",
+                    toastCopied: "Copied successfully!",
+                    toastCopyFailed: "Copy failed!",
+                    toastNothingToCopy: "Nothing to copy!",
+                    toastPasteFailed: "Paste failed. Please use Ctrl+V.",
+                    toastPasteNotSupported: "Your browser does not support automatic pasting.",
+                },
+                ar: {
+                    title: "أداة تنسيق النصوص",
+                    subtitle: "أضف مسافات بين السطور بسهولة مع الحفاظ على التنسيق الخاص.",
+                    originalText: "النص الأصلي",
+                    formattedText: "النص المنسق",
+                    inputTextPlaceholder: "الصق النص هنا...",
+                    outputTextPlaceholder: "ستظهر النتيجة هنا...",
+                    formatButton: "تنسيق النص",
+                    pasteButton: "لصق",
+                    copyButton: "نسخ النتيجة",
+                    toastCopied: "تم النسخ بنجاح!",
+                    toastCopyFailed: "فشل النسخ!",
+                    toastNothingToCopy: "لا يوجد شيء لنسخه!",
+                    toastPasteFailed: "فشل اللصق. الرجاء استخدام Ctrl+V.",
+                    toastPasteNotSupported: "متصفحك لا يدعم اللصق التلقائي.",
+                },
+                fr: {
+                    title: "Outil de Formatage de Texte",
+                    subtitle: "Ajoutez facilement des espaces entre les lignes tout en préservant le formatage spécial.",
+                    originalText: "Texte Original",
+                    formattedText: "Texte Formaté",
+                    inputTextPlaceholder: "Collez votre text ici...",
+                    outputTextPlaceholder: "Le résultat apparaîtra ici...",
+                    formatButton: "Formater le Texte",
+                    pasteButton: "Coller",
+                    copyButton: "Copier le Résultat",
+                    toastCopied: "Copié avec succès !",
+                    toastCopyFailed: "La copie a échoué !",
+                    toastNothingToCopy: "Rien à copier !",
+                    toastPasteFailed: "Le collage a échoué. Veuillez utiliser Ctrl+V.",
+                    toastPasteNotSupported: "Votre navigateur ne prend pas en charge le collage automatique.",
+                }
+            };
+
+            let currentLang = 'tr';
+
+            function setLanguage(lang) {
+                if (!translations[lang]) return;
+                currentLang = lang;
+                
+                docHtml.lang = lang;
+                docHtml.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.getAttribute('data-lang-key');
+                    el.innerText = translations[lang][key];
+                });
+                
+                document.querySelectorAll('[data-lang-key-placeholder]').forEach(el => {
+                    const key = el.getAttribute('data-lang-key-placeholder');
+                    el.placeholder = translations[lang][key];
+                });
+
+                document.title = translations[lang].title;
+
+                langSwitcher.querySelectorAll('button').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lang === lang);
+                });
+            }
+
+            langSwitcher.addEventListener('click', (e) => {
+                const targetButton = e.target.closest('button');
+                if (targetButton && targetButton.dataset.lang) {
+                    setLanguage(targetButton.dataset.lang);
+                }
+            });
+
+            // --- ANIMASYONLU POP-UP (MODAL) TETİKLEYİCİSİ ---
+            function showModal(key) {
+                const message = translations[currentLang][key] || 'İşlem Tamamlandı';
+                modalMessage.textContent = message;
+                modal.classList.add('active');
+            }
+
+            modalClose.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+
+            // --- METİN DÜZENLEME MANTIĞI ---
+            formatBtn.addEventListener('click', () => {
+                const originalText = inputText.value;
+                if (!originalText) {
+                    outputText.value = '';
+                    return;
+                }
+
+                const nonEmptyLines = originalText.split('\n').filter(line => line.trim() !== '');
+
+                if (nonEmptyLines.length === 0) {
+                    outputText.value = '';
+                    return;
+                }
+
+                let newText = nonEmptyLines[0];
+                
+                for (let i = 1; i < nonEmptyLines.length; i++) {
+                    const currentLine = nonEmptyLines[i];
+                    const trimmedCurrentLine = currentLine.trim();
+
+                    if (trimmedCurrentLine.startsWith('//') || trimmedCurrentLine.startsWith('\\')) {
+                        newText += '\n' + currentLine;
+                    } else {
+                        newText += '\n\n' + currentLine;
+                    }
+                }
+                
+                outputText.value = newText;
+            });
+
+            // --- KOPYALAMA VE YAPIŞTIRMA MANTIĞI ---
+            copyBtn.addEventListener('click', () => {
+                if (outputText.value) {
+                    outputText.select();
+                    outputText.setSelectionRange(0, 99999);
+                    try {
+                        document.execCommand('copy');
+                        showModal('toastCopied');
+                    } catch (err) {
+                        console.error('Kopyalama hatası: ', err);
+                        showModal('toastCopyFailed');
+                    }
+                    window.getSelection().removeAllRanges();
+                } else {
+                    showModal('toastNothingToCopy');
+                }
+            });
+
+            pasteBtn.addEventListener('click', async () => {
+                try {
+                    if (navigator.clipboard && navigator.clipboard.readText) {
+                        const text = await navigator.clipboard.readText();
+                        inputText.value = text;
+                        formatBtn.click();
+                    } else {
+                        showModal('toastPasteNotSupported');
+                    }
+                } catch (err) {
+                    console.error('Yapıştırma hatası: ', err);
+                    showModal('toastPasteFailed');
+                }
+            });
+
+            inputText.addEventListener('paste', () => {
+                setTimeout(() => formatBtn.click(), 50);
+            });
+
+            // --- BAŞLANGIÇ AYARLARI ---
+            function initializeApp() {
+                setLanguage('tr');
+            }
+            
+            initializeApp();
+        });
+    </script>
+</body>
+</html>
